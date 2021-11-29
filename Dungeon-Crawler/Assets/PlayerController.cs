@@ -48,6 +48,9 @@ public class PlayerController : MonoBehaviour
         _inputYaw = Input.GetAxisRaw("Horizontal");
         _inputPitch =  Input.GetAxisRaw("Vertical");
         _moveDirectrion = new Vector3(_inputYaw, 0.0f, _inputPitch);
-        _controller.Move(_moveDirectrion.normalized * Speed * Time.deltaTime);
+        if(_moveDirectrion != Vector3.zero){
+            _controller.Move(_moveDirectrion.normalized * Speed * Time.deltaTime);
+            transform.rotation = Quaternion.LookRotation(_moveDirectrion);
+        }
     }
 }
