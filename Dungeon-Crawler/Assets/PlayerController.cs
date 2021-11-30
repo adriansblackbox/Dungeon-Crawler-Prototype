@@ -10,17 +10,21 @@ public class PlayerController : MonoBehaviour
     private float _inputPitch;
 
     //variables for weapon swapping
+    public Transform CameraRoot;
     public GameObject weapon1;
     public GameObject weapon2;
     public bool melee = true;
 
     public float Speed = 10.0f;
+    public float CameraFollowDelay = 20f;
     void Start()
     {
         _controller = GetComponent<CharacterController>();
     }
     void Update()
     {
+        CameraRoot.position = Vector3.Lerp(CameraRoot.position, this.transform.position, Time.deltaTime *  CameraFollowDelay);
+
         Movement();
         
         //weapon swap
