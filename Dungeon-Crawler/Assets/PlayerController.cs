@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     public GameObject weapon2;
     public bool melee = true;
 
+    //variables for icon swapping
+    public GameObject hammerIcon;
+    public GameObject bowIcon;
+
     public float Speed = 10.0f;
     public float CameraFollowDelay = 20f;
     void Start()
@@ -35,14 +39,18 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("swap to bow");
                 weapon1.SetActive(false);
+                hammerIcon.SetActive(false);
                 weapon2.SetActive(true);
+                bowIcon.SetActive(true);
             }
            //swap to bow
            if (melee == false)
             {
                 Debug.Log("swap to hammer");
                 weapon1.SetActive(true);
+                hammerIcon.SetActive(true);
                 weapon2.SetActive(false);
+                bowIcon.SetActive(false);
             }
            //toggle between melee and ranged state
             melee = !melee;
