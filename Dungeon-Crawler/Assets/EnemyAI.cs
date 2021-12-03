@@ -38,23 +38,9 @@ public class EnemyAI : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (!playerInSightRange && !playerInAttackRange) Patroling();
+        //if (!playerInSightRange && !playerInAttackRange) Patroling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
         if (playerInAttackRange && playerInSightRange) AttackPlayer();
-    }
-
-    private void Patroling()
-    {
-        //if (!walkPointSet) SearchWalkPoint();
-
-        //if (walkPointSet)
-        //    agent.SetDestination(walkPoint);
-
-        //Vector3 distanceToWalkPoint = transform.position - walkPoint;
-
-        //Walkpoint reached
-        //if (distanceToWalkPoint.magnitude < 1f)
-        //    walkPointSet = false;
     }
     private void SearchWalkPoint()
     {
@@ -83,7 +69,6 @@ public class EnemyAI : MonoBehaviour
         if (!alreadyAttacked)
         {
             ///Attack code here
-            Debug.Log("shooting");
             ///End of attack code
 
             alreadyAttacked = true;

@@ -8,12 +8,15 @@ public class PlayerController : MonoBehaviour
     private Vector3 _moveDirectrion;
     private float _inputYaw;
     private float _inputPitch;
+    private float _attackTimer;
 
     //variables for weapon swapping
     public Transform CameraRoot;
+    public Collider AttackRange;
     public GameObject weapon1;
     public GameObject weapon2;
     public bool melee = true;
+    public float AttackTime = 0.5f;
 
     //variables for icon swapping
     public GameObject hammerIcon;
@@ -27,34 +30,12 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        // Lerp camera position to player to avoid any stuttering
         CameraRoot.position = Vector3.Lerp(CameraRoot.position, this.transform.position, Time.deltaTime *  CameraFollowDelay);
-
-        Movement();
-        
-        //weapon swap
-        if (Input.GetKeyDown("e"))
-        {
-            //swap to hammer
-           if (melee == true)
-            {
-                Debug.Log("swap to bow");
-                weapon1.SetActive(false);
-                hammerIcon.SetActive(false);
-                weapon2.SetActive(true);
-                bowIcon.SetActive(true);
-            }
-           //swap to bow
-           if (melee == false)
-            {
-                Debug.Log("swap to hammer");
-                weapon1.SetActive(true);
-                hammerIcon.SetActive(true);
-                weapon2.SetActive(false);
-                bowIcon.SetActive(false);
-            }
-           //toggle between melee and ranged state
-            melee = !melee;
-        }
+        if(melee) Attack();
+        else Shoot();
+        if(!AttackRange.enabled)Movement();
+        WeaponSwap();
     }
     private void Movement(){
         _inputYaw = Input.GetAxisRaw("Horizontal");
@@ -64,5 +45,40 @@ public class PlayerController : MonoBehaviour
             _controller.Move(_moveDirectrion.normalized * Speed * Time.deltaTime);
             transform.rotation = Quaternion.LookRotation(_moveDirectrion);
         }
+    }
+    private void WeaponSwap(){
+        // Weapon swap
+        if (Input.GetKeyDown("e")){
+            // Toggle between melee and ranged state
+            melee = !melee;
+            // Swap to hammer
+            if (melee == false){
+                Debug.Log("swap to bow");
+                weapon1.SetActive(false);
+                hammerIcon.SetActive(false);
+                weapon2.SetActive(true);
+                bowIcon.SetActive(true);
+            }
+            // Swap to bow
+            if (melee == true){
+                Debug.Log("swap to hammer");
+                weapon1.SetActive(true);
+                hammerIcon.SetActive(true);
+                weapon2.SetActive(false);
+                bowIcon.SetActive(false);
+            }
+        }
+    }
+    private void Attack(){
+        if(Input.GetKeyDown(KeyCode.Mouse0)){
+            _attackTimer = AttackTime;
+            AttackRange.enabled = true;
+        }
+        if( _attackTimer > 0.0f) _attackTimer -= Time.deltaTime;
+        else AttackRange.enabled = false;
+    }
+    private void Shoot(){
+        _attackTimer = 0.0f;
+        // code for shooting
     }
 }
