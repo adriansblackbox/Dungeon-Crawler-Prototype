@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     //variables for weapon swapping
     public Transform CameraRoot;
     public Collider AttackRange;
+    public SpriteRenderer Swoosh;
     public GameObject weapon1;
     public GameObject weapon2;
     public bool melee = true;
@@ -34,16 +35,19 @@ public class PlayerController : MonoBehaviour
         CameraRoot.position = Vector3.Lerp(CameraRoot.position, this.transform.position, Time.deltaTime *  CameraFollowDelay);
         if(melee) Attack();
         else Shoot();
-        if(!AttackRange.enabled)Movement();
+        Movement();
         WeaponSwap();
     }
     private void Movement(){
         _inputYaw = Input.GetAxisRaw("Horizontal");
         _inputPitch =  Input.GetAxisRaw("Vertical");
         _moveDirectrion = new Vector3(_inputYaw, 0.0f, _inputPitch);
-        if(_moveDirectrion != Vector3.zero){
+        if(_moveDirectrion != Vector3.zero && !AttackRange.enabled){
             _controller.Move(_moveDirectrion.normalized * Speed * Time.deltaTime);
             transform.rotation = Quaternion.LookRotation(_moveDirectrion);
+        }else{
+            _controller.Move(_moveDirectrion.normalized * Speed/2 * Time.deltaTime);
+            //transform.rotation = Quaternion.LookRotation(_moveDirectrion);
         }
     }
     private void WeaponSwap(){
@@ -73,9 +77,13 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Mouse0)){
             _attackTimer = AttackTime;
             AttackRange.enabled = true;
+            Swoosh.enabled = true;
         }
         if( _attackTimer > 0.0f) _attackTimer -= Time.deltaTime;
-        else AttackRange.enabled = false;
+        else{
+            Swoosh.enabled = false;
+            AttackRange.enabled = false;
+        }
     }
     private void Shoot(){
         _attackTimer = 0.0f;

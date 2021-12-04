@@ -1,4 +1,5 @@
-
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,7 +11,6 @@ public class EnemyAI : MonoBehaviour
 
     public LayerMask whatIsGround, whatIsPlayer;
 
-    public float health;
 
     //Patroling
     public Vector3 walkPoint;
@@ -21,6 +21,8 @@ public class EnemyAI : MonoBehaviour
     public float timeBetweenAttacks;
     bool alreadyAttacked;
     public GameObject projectile;
+    public Collider AttackRange;
+    public SpriteRenderer Swoosh;
 
     //States
     public float sightRange, attackRange;
@@ -39,7 +41,7 @@ public class EnemyAI : MonoBehaviour
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
         //if (!playerInSightRange && !playerInAttackRange) Patroling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
+        if (playerInSightRange && !playerInAttackRange && !alreadyAttacked) ChasePlayer();
         if (playerInAttackRange && playerInSightRange) AttackPlayer();
     }
     private void SearchWalkPoint()
@@ -68,27 +70,20 @@ public class EnemyAI : MonoBehaviour
 
         if (!alreadyAttacked)
         {
-            ///Attack code here
-            ///End of attack code
-
             alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            StartCoroutine("EnemyAttack");
         }
     }
-    private void ResetAttack()
-    {
+
+    private IEnumerator EnemyAttack(){
+
+        yield return new WaitForSeconds(0.6f);
+        AttackRange.enabled = true;
+        Swoosh.enabled = true;
+        yield return new WaitForSeconds(0.4f);
+        AttackRange.enabled = false;
+        Swoosh.enabled = false;
         alreadyAttacked = false;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
-    }
-    private void DestroyEnemy()
-    {
-        Destroy(gameObject);
     }
 
     private void OnDrawGizmosSelected()
