@@ -37,7 +37,7 @@ public class EnemyAI : MonoBehaviour
     private void Update()
     {
         //Check for sight and attack range
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
+        if(Physics.CheckSphere(transform.position, sightRange, whatIsPlayer)) playerInSightRange = true;
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
         //if (!playerInSightRange && !playerInAttackRange) Patroling();
